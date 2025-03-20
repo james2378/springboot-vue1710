@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dao.FangkeyuyueDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.entity.FangkeyuyueEntity" id="fangkeyuyueMap">
+        <result property="yuyuebianhao" column="yuyuebianhao"/>
+        <result property="biaoti" column="biaoti"/>
+        <result property="fangkezhanghao" column="fangkezhanghao"/>
+        <result property="fangkexingming" column="fangkexingming"/>
+        <result property="lianxifangshi" column="lianxifangshi"/>
+        <result property="fangrenxingming" column="fangrenxingming"/>
+        <result property="fangrenshoujihao" column="fangrenshoujihao"/>
+        <result property="fangwenriqi" column="fangwenriqi"/>
+        <result property="fangwenzhuangtai" column="fangwenzhuangtai"/>
+        <result property="yuyueshijian" column="yuyueshijian"/>
+        <result property="fangwenshiyin" column="fangwenshiyin"/>
+    </resultMap>
+
+	<select id="selectListVO"
+		resultType="com.entity.vo.FangkeyuyueVO" >
+		SELECT * FROM fangkeyuyue  fangkeyuyue         
+        <where> 1=1 ${ew.sqlSegment}</where>
+	</select>
+	
+	<select id="selectVO"
+		resultType="com.entity.vo.FangkeyuyueVO" >
+		SELECT  fangkeyuyue.* FROM fangkeyuyue  fangkeyuyue 	
+ 		<where> 1=1 ${ew.sqlSegment}</where>
+	</select>
+
+    <select id="selectListView"
+		resultType="com.entity.view.FangkeyuyueView" >
+
+		SELECT  fangkeyuyue.* FROM fangkeyuyue  fangkeyuyue 	        
+        <where> 1=1 ${ew.sqlSegment}</where>
+	</select>
+	
+	<select id="selectView"
+		resultType="com.entity.view.FangkeyuyueView" >
+		SELECT * FROM fangkeyuyue  fangkeyuyue <where> 1=1 ${ew.sqlSegment}</where>
+	</select>
+	
+
+    <select id="selectValue" resultType="map" >
+        SELECT ${params.xColumn}, sum(${params.yColumn}) total FROM fangkeyuyue
+        <where> 1=1 ${ew.sqlSegment}</where>
+        group by ${params.xColumn}
+        limit 10
+    </select>
+
+    <select id="selectTimeStatValue" resultType="map" >
+        <if test = 'params.timeStatType == "日"'>
+                SELECT DATE_FORMAT(${params.xColumn},'%Y-%m-%d') ${params.xColumn}, sum(${params.yColumn}) total FROM fangkeyuyue
+                <where> 1=1 ${ew.sqlSegment}</where>
+                group by DATE_FORMAT(${params.xColumn},'%Y-%m-%d')
+        </if>
+        <if test = 'params.timeStatType == "月"'>
+                SELECT DATE_FORMAT(${params.xColumn},'%Y-%m') ${params.xColumn}, sum(${params.yColumn}) total FROM fangkeyuyue
+                <where> 1=1 ${ew.sqlSegment}</where>
+                group by DATE_FORMAT(${params.xColumn},'%Y-%m')
+        </if>
+        <if test = 'params.timeStatType == "年"'>
+                SELECT DATE_FORMAT(${params.xColumn},'%Y') ${params.xColumn}, sum(${params.yColumn}) total FROM fangkeyuyue
+                <where> 1=1 ${ew.sqlSegment}</where>
+                group by DATE_FORMAT(${params.xColumn},'%Y')
+        </if>
+    </select>
+
+    <select id="selectGroup" resultType="map" >
+        SELECT ${params.column} , count(1) total FROM fangkeyuyue
+        <where> 1=1 ${ew.sqlSegment}</where>
+        group by ${params.column}
+        limit 10
+    </select>
+
+
+    <select id="biaotifangwenzhuangtaiTypeStat" resultType="map" >
+        select
+        biaoti,
+        sum(case when fangwenzhuangtai in ('已访问') then 1 else 0 end) as 已访问,        sum(case when fangwenzhuangtai in ('未访问') then 1 else 0 end) as 未访问        from fangkeyuyue
+        <where> 1=1 ${ew.sqlSegment}</where>
+        group by biaoti
+    </select>
+
+</mapper>
